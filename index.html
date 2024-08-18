@@ -10,10 +10,39 @@
   <button onclick="connectBluetooth()">Connect Bluetooth</button>
 
   <script>
+   
     let bluetoothDevice;
     let bluetoothCharacteristic;
 
     async function connectBluetooth() {
+      if(navigator.userAgentData.mobile){
+    // feature detect
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission()
+        .then(permissionState => {
+          if (permissionState === 'granted') {
+            window.addEventListener('devicemotion', (event) => {
+
+      const motionData = {
+        acceleration: event.acceleration,
+        accelerationIncludingGravity: event.accelerationIncludingGravity,
+        rotationRate: event.rotationRate,
+        interval: event.interval,
+      };
+      console.log('Motion Data:', motionData);
+
+      // Send motion data via Bluetooth
+      sendDataToBluetooth(JSON.stringify(motionData));
+            });
+          }
+        })
+        .catch(console.error);
+    } else {
+      // handle regular non iOS 13+ devices
+    }
+  
+    }
+    else{
       try {
         bluetoothDevice = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: [0x180F]});
         
@@ -26,7 +55,7 @@
         console.error('Bluetooth connection failed', error);
       }
     }
-
+  }
     function sendDataToBluetooth(data) {
       if (bluetoothCharacteristic) {
         const encoder = new TextEncoder();
@@ -37,18 +66,7 @@
       }
     }
 
-    window.addEventListener('devicemotion', (event) => {
-      const motionData = {
-        acceleration: event.acceleration,
-        accelerationIncludingGravity: event.accelerationIncludingGravity,
-        rotationRate: event.rotationRate,
-        interval: event.interval,
-      };
-      console.log('Motion Data:', motionData);
-
-      // Send motion data via Bluetooth
-      sendDataToBluetooth(JSON.stringify(motionData));
-    });
+     
   </script>
 </body>
 </html>
