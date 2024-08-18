@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Motion to Bluetooth</title>
+</head>
+<body>
+  <h1>Device Motion to Bluetooth</h1>
+  <button onclick="connectBluetooth()">Connect Bluetooth</button>
+
+  <script>
+    let bluetoothDevice;
+    let bluetoothCharacteristic;
+
+    async function connectBluetooth() {
+      try {
+        bluetoothDevice = await navigator.bluetooth.requestDevice({
+          filters: [{ services: ['battery_service'] }] // Replace with the actual service you need
+        });
+        
+        const server = await bluetoothDevice.gatt.connect();
+        const service = await server.getPrimaryService('battery_service'); // Replace with the actual service UUID
+        bluetoothCharacteristic = await service.getCharacteristic('battery_level'); // Replace with your writable characteristic UUID
+
+        console.log('Connected to Bluetooth Device');
+      } catch (error) {
+        console.error('Bluetooth connection failed', error);
+      }
+    }
+
+    function sendDataToBluetooth(data) {
+      if (bluetoothCharacteristic) {
+        const encoder = new TextEncoder();
+        const encodedData = encoder.encode(data);
+        bluetoothCharacteristic.writeValue(encodedData)
+          .then(() => console.log('Data sent:', data))
+          .catch(error => console.error('Error sending data:', error));
+      }
+    }
+
+    window.addEventListener('devicemotion', (event) => {
+      const motionData = {
+        acceleration: event.acceleration,
+        accelerationIncludingGravity: event.accelerationIncludingGravity,
+        rotationRate: event.rotationRate,
+        interval: event.interval,
+      };
+      console.log('Motion Data:', motionData);
+
+      // Send motion data via Bluetooth
+      sendDataToBluetooth(JSON.stringify(motionData));
+    });
+  </script>
+</body>
+</html>
