@@ -18,7 +18,7 @@
     try {
       const value = await bluetoothCharacteristic.readValue();
       const decoder = new TextDecoder();
-      const decodedValue = decoder.decode(value);
+      const decodedValue = JSON.parse(decoder.decode(value));
 
       console.log('Received data:', decodedValue);
     } catch (error) {
