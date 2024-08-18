@@ -19,7 +19,7 @@
   return check;
 };
     async function connectBluetooth() {
-      if(window.mobileAndTabletCheck){
+      if(!window.mobileAndTabletCheck){
     // feature detect
     if (typeof DeviceMotionEvent.requestPermission === 'function') {
       DeviceMotionEvent.requestPermission()
