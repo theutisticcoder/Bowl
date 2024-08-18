@@ -43,7 +43,6 @@
       // handle regular non iOS 13+ devices
     }
   
-    if(!navigator.userAgent.mobile){
       try {
         bluetoothDevice = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: [0x180F]});
         
@@ -55,7 +54,6 @@
       } catch (error) {
         console.error('Bluetooth connection failed', error);
       }
-    }
   }
     function sendDataToBluetooth(data) {
       if (bluetoothCharacteristic) {
