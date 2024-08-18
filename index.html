@@ -19,9 +19,7 @@
   return check;
 };
     async function connectBluetooth() {
-      if(!window.mobileAndTabletCheck){
-    // feature detect
-    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
       DeviceMotionEvent.requestPermission()
         .then(permissionState => {
           if (permissionState === 'granted') {
@@ -45,8 +43,7 @@
       // handle regular non iOS 13+ devices
     }
   
-    }
-    else{
+    if(!navigator.userAgent.mobile){
       try {
         bluetoothDevice = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: [0x180F]});
         
