@@ -18,7 +18,7 @@
     try {
       const value = await bluetoothCharacteristic.readValue();
       const decoder = new TextDecoder();
-      const decodedValue = JSON.parse(decoder.decode(value));
+      const decodedValue = decoder.decode(value);
 
       console.log('Received data:', decodedValue);
     } catch (error) {
@@ -48,7 +48,7 @@
       };
 
       // Send motion data via Bluetooth
-      sendDataToBluetooth(JSON.stringify(motionData));
+      sendDataToBluetooth(event.accelerationIncludingGravity);
             });
           }
         })
