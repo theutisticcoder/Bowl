@@ -15,7 +15,7 @@
 
     async function connectBluetooth() {
       try {
-        bluetoothDevice = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: ["battery-service"]});
+        bluetoothDevice = await navigator.bluetooth.requestDevice({acceptAllDevices: true, optionalServices: [0x180F]});
         
         const server = await bluetoothDevice.gatt.connect();
         const service = await server.getPrimaryService('battery_service'); // Replace with the actual service UUID
